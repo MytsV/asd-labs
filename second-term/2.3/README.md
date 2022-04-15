@@ -14,3 +14,5 @@
 Так виглядає фінальний варіант
 
 ![graph](examples/graph.png)
+
+[Приклад роботи](https://www.youtube.com/watch?v=FpvsOlWmDTo)
