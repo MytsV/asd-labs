@@ -11,8 +11,8 @@
 
 Для побудови стрілки були використані формули:
 
-![arrow](examples/arrow.png)
+![arrow](../2.3/examples/arrow.png)
 
 Так виглядає фінальний варіант
 
-![graph](examples/graph.png)
+![graph](../2.3/examples/graph.png)
