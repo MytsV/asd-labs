@@ -6,6 +6,12 @@
 #include "../headers/matrix_tools.h"
 #include "../headers/data_structures.h"
 
+#define UNUSED_FLAG 0
+#define ACTIVE_FLAG 1
+#define USED_FLAG 2
+#define SKIPPED_FLAG 3
+#define ENQUEUED_FLAG 4
+
 const char APP_NAME[] = "Graph Search";
 
 /*
@@ -79,12 +85,6 @@ typedef struct color //тут значення RGB є нормованими, т
     double b;
 }
 color_t;
-
-const int UNUSED_FLAG = 0;
-const int ACTIVE_FLAG = 1;
-const int USED_FLAG = 2;
-const int SKIPPED_FLAG = 3;
-const int ENQUEUED_FLAG = 4;
 
 //індекс кольору в масиві відповідний значенню константи вище
 color_t colors[] = {{0.792, 0.976, 0.764}, {0.964, 0.717, 0.737}, {0.976, 0.933, 0.823}, {0.870, 0.870, 0.870}, {0.858, 0.952, 0.980}};
