@@ -4,7 +4,7 @@
 #include "../headers/matrix_tools.h"
 
 int is_directed; //чи є граф напрямленим
-int node_count; //кількість вершин
+int node_count_graph; //кількість вершин
 int condensed_size; //кількість вершин конденсованого графа
 
 /*
@@ -73,7 +73,7 @@ void set_directed(int directed) {
 }
 
 void set_count(int n) {
-    node_count = n;
+    node_count_graph = n;
 }
 
 void output_array(int n, int array[n]) 
@@ -269,14 +269,14 @@ void output_degree_operations(double **matrix) {
     printf("\nOutputting degrees for every node:\n");
 
     if (!is_directed) {
-        int *degrees = get_undirected_degrees(node_count, matrix);
-        output_array(node_count, degrees);
-        output_is_regular(node_count, degrees);
-        output_node_types(node_count, degrees);
+        int *degrees = get_undirected_degrees(node_count_graph, matrix);
+        output_array(node_count_graph, degrees);
+        output_is_regular(node_count_graph, degrees);
+        output_node_types(node_count_graph, degrees);
 
         free(degrees);
     } else {
-        output_directed_degree_info(node_count, matrix);
+        output_directed_degree_info(node_count_graph, matrix);
     }
 }
 
@@ -327,18 +327,18 @@ void get_paths(int length, int n, double **matrix)
 
 void output_path_operations(double **matrix) {
     printf("\nMatrix of power 2: \n");
-    double **matrix_2 = matrix_square_multiply(node_count, matrix, matrix);
-    output_matrix(node_count, node_count, matrix_2);
+    double **matrix_2 = matrix_square_multiply(node_count_graph, matrix, matrix);
+    output_matrix(node_count_graph, node_count_graph, matrix_2);
 
     printf("\nPaths of length 2: \n");
-    get_paths(1, node_count, matrix_2);
+    get_paths(1, node_count_graph, matrix_2);
 
     printf("\nMatrix of power 3: \n");
-    double **matrix_3 = matrix_square_multiply(node_count, matrix, matrix_2);
-    output_matrix(node_count, node_count, matrix_3);
+    double **matrix_3 = matrix_square_multiply(node_count_graph, matrix, matrix_2);
+    output_matrix(node_count_graph, node_count_graph, matrix_3);
 
     printf("\nPaths of length 3: \n");
-    get_paths(1, node_count, matrix_3);
+    get_paths(1, node_count_graph, matrix_3);
 }
 
 /*
@@ -350,7 +350,7 @@ void search_components(double **matrix, int index, int component_num, int *used,
     used[index] = 1; //позначаємо, що ця вершина була проглянута
     components[index] = component_num; //позначаємо, що ця вершина відноситься до певного компонента
 
-    for (int i = 0; i < node_count; i++) {
+    for (int i = 0; i < node_count_graph; i++) {
         if (!used[i] && matrix[index][i]) {
             search_components(matrix, i, component_num, used, components);
         }
@@ -410,7 +410,7 @@ double **get_reachability_matrix(int n, double **matrix) //отримання м
         }
     }
 
-    double **powered = matrix_square_multiply(node_count, matrix, matrix);
+    double **powered = matrix_square_multiply(node_count_graph, matrix, matrix);
 
     for (int time = 0; time < n - 1; time++) //операція транзитивного замикання
     {
@@ -421,7 +421,7 @@ double **get_reachability_matrix(int n, double **matrix) //отримання м
                 reachability[i][j] = reachability[i][j] || powered[i][j];
             }
         }
-        double **temp = matrix_square_multiply(node_count, powered, matrix);
+        double **temp = matrix_square_multiply(node_count_graph, powered, matrix);
         free(powered);
         powered = temp;
     }
@@ -478,20 +478,20 @@ double **get_condensed_matrix(int n, double **matrix) { //отримання м�
 */
 
 void output_reachability_operations(double **matrix) {
-    double **reachability = get_reachability_matrix(node_count, matrix);
+    double **reachability = get_reachability_matrix(node_count_graph, matrix);
     printf("\nReachability matrix:\n");
-    output_matrix(node_count, node_count, reachability);
+    output_matrix(node_count_graph, node_count_graph, reachability);
 
-    double **connection_matrix = get_connection_matrix(node_count, reachability);
+    double **connection_matrix = get_connection_matrix(node_count_graph, reachability);
     printf("\nConnection matrix:\n");
-    output_matrix(node_count, node_count, connection_matrix);
+    output_matrix(node_count_graph, node_count_graph, connection_matrix);
 
-    int *components = get_connection_components(node_count, connection_matrix);
+    int *components = get_connection_components(node_count_graph, connection_matrix);
     printf("\nComponents themselves:\n");
-    output_components(node_count, components);
+    output_components(node_count_graph, components);
     
-    free_matrix(node_count,reachability);
-    free_matrix(node_count, connection_matrix);
+    free_matrix(node_count_graph,reachability);
+    free_matrix(node_count_graph, connection_matrix);
 
     free(components);
 }
