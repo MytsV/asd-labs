@@ -98,6 +98,9 @@ struct field window_field;
 double **matrix;
 double **tree_matrix;
 
+double **relativity_matrix;
+int relativity_count = 1;
+
 my_stack_t *element_stack; //стек вершин, призначений для пошуку в глибину
 my_queue_t *element_queue; //черга вершин, призначена для пошуку в ширину
 
@@ -664,6 +667,8 @@ void dfs() //пошук в глибину
                 neighbour = i;
                 connection_status[element][i] = ACTIVE_FLAG;
                 neighbour_indices[element] = i + 1;
+                relativity_matrix[i][relativity_count] = 1;
+                relativity_count++;
                 break;
             }
             else if (connection_status[element][i] != USED_FLAG)
@@ -720,6 +725,8 @@ void bfs() //пошук в ширину
                 enqueue_queue(element_queue, i);
                 node_status[i] = ENQUEUED_FLAG;
                 connection_status[element][i] = ENQUEUED_FLAG;
+                relativity_matrix[i][relativity_count] = 1;
+                relativity_count++;
             }
             else if (connection_status[element][i] != USED_FLAG)
             {
@@ -740,25 +747,33 @@ void on_search_end(GtkWidget *widget)
     search_end = 1;
 }
 
+void on_show_tree(GtkWidget *widget) {
+    printf("\nTree of graph search\n\n");
+    output_matrix(NODE_COUNT, NODE_COUNT, tree_matrix);
+
+    printf("\nMatrix of relativity\n\n");
+    output_matrix(NODE_COUNT, NODE_COUNT, relativity_matrix);
+
+    matrix = tree_matrix;
+        
+    gtk_widget_hide(widget);
+
+    margin = MARGIN_TREE;
+    node_radius = NODE_RADIUS_TREE;
+    node_spacing = NODE_SPACING_TREE;
+    show_tree = 1;
+}
+
 static void on_clicked(GtkWidget *widget, gpointer data)
 {
     if (search_end)
     {
-        printf("\nTree of graph search\n\n");
-        output_matrix(NODE_COUNT, NODE_COUNT, tree_matrix);
-        matrix = tree_matrix;
-        
-        gtk_widget_hide(widget);
-
-        margin = MARGIN_TREE;
-        node_radius = NODE_RADIUS_TREE;
-        node_spacing = NODE_SPACING_TREE;
-        show_tree = 1;
+        on_show_tree(widget);
     } 
     else if (is_dfs)
     {
         if (element_stack->last_index != -1)
-        {
+        {            
             dfs();
         }
         else 
@@ -873,6 +888,8 @@ int get_first_node()
         }
     }
 
+    relativity_matrix[first_node][0] = 1;
+
     return first_node;
 }
 
@@ -914,14 +931,17 @@ void init_connection_status()
 {
     connection_status = (double **)malloc(sizeof(double *) * NODE_COUNT);
     tree_matrix = (double **)malloc(sizeof(double *) * NODE_COUNT);
+    relativity_matrix = (double **)malloc(sizeof(double *) * NODE_COUNT);
     for (int i = 0; i < NODE_COUNT; i++) 
     {
         connection_status[i] = (double *)malloc(sizeof(double) * NODE_COUNT);
         tree_matrix[i] = (double *)malloc(sizeof(double) * NODE_COUNT);
+        relativity_matrix[i] = (double *)malloc(sizeof(double) * NODE_COUNT);
         for (int j = 0; j < NODE_COUNT; j++) 
         {
             connection_status[i][j] = 0;
             tree_matrix[i][j] = 0;
+            relativity_matrix[i][j] = 0;
         }
     }
 }
